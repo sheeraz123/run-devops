@@ -17,6 +17,8 @@ namespace shopping.client.Controllers
         public IActionResult Index()
         {
             return View(ProductContext.Products);
+
+
         }
 
         public IActionResult Privacy()
