@@ -1,0 +1,53 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: shoppingapi-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: shoppingapi
+  template:
+    metadata:
+      labels:
+        app: shoppingapi
+    spec:
+      containers:
+      - name: shoppingapi
+        image: sheerazshoppingacr.azurecr.io/shoppingapi:v1
+        imagePullPolicy: IfNotPresent
+        resources:
+          requests:
+            memory: "64Mi"
+            cpu: "0.1"
+          limits:
+            memory: "128Mi"
+            cpu: "0.3"
+        ports:
+        - containerPort: 80
+        env:
+          - name: ASPNETCORE_ENVIRONMENT
+            value: Development
+          - name: DatabaseSetting__ConnectionString
+            valueFrom:
+              configMapKeyRef:
+                name: mongo-configmap
+                key: connection_string  
+      imagePullSecrets:
+        - name: acr-secret 
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: shoppingapi-service
+spec:
+  selector:
+    app: shoppingapi-service
+  ports:
+  - port: 80
+    protocol: TCP 
+    
+    
+
+
